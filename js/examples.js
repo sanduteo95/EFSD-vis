@@ -25,7 +25,7 @@ var avg3_ex =
 + '  let _ = link s0 to x in\n'
 + '  let _ = link s1 to s0 in\n'
 + '  let _ = link s2 to s1 in\n'
-+ '  ((f 0 s0) + (f 1 s1) + (f 2 s2))\n'
++ '  (f 0 s0) + (f 1 s1) + (f 2 s2)\n'
 + 'in\n'
 + '\n'
 + 'let input = {0} in\n'
