@@ -10,7 +10,7 @@ define(function(require) {
 	class Prop extends Node {
 		
 		constructor() {
-			super(null, "s");
+			super(null, "s", "indianred1");
 		}
 
 		transition(token, link) {
