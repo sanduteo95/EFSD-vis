@@ -10,14 +10,21 @@ var max_ex =
 + 'm';
 
 var alt_ex =
-  'let s = {true} in\n' 
-+ 'let _ = link s to (~ (deref s)) in\n' 
+  'let state_machine = λinit. λtrans. λinp.\n'
++ '  let state = {init} in\n'
++ '  let _ = link state to (trans state inp) in\n'
++ '  state\n'
++ 'in\n'
++ '\n'
++ 'let alt = state_machine 1 (λs.λ_. 1 - (deref s)) 0 in\n'
++ 'let sum = λinp. state_machine 0 (λs.λi. i + (deref s)) inp in\n'
++ 'let alt_sum = sum (deref alt) in\n'
 + 'let _ = step in\n' 
 + 'let _ = step in\n' 
 + 'let _ = step in\n' 
-+ 's'; 
++ 'peek alt_sum'; 
 
-var avg3_ex =
+var fir_ex =
   'let fir3 = λf.λx. \n' 
 + '  let s0 = {0} in\n'
 + '  let s1 = {0} in\n'
