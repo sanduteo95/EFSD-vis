@@ -22,6 +22,9 @@
   				change: function(event, ui) {
   					var prog;
   					switch($("#sm-example option:selected").val()) {
+  						case "basic": prog = basic_ex; break;
+  						case "dataflow": prog = dfg_ex; break;
+  						case "link": prog = link_ex; break;
   						case "max": prog = max_ex; break;
   						case "alt": prog = alt_ex; break;
   						case "fir": prog = fir_ex; break;
@@ -39,6 +42,9 @@
 <body>
 	<div class="left">
 		<select id="sm-example">
+			<option value="basic">Basic</option>
+			<option value="dataflow">Dataflow graph</option>
+			<option value="link">Link</option>
 			<option value="max">Maximum of two int</option>
 			<option value="alt">Alternating signal</option>
 			<option value="fir">Finite impulse response filter</option>
@@ -85,6 +91,9 @@
 		$("#sm-example").val(ex);
 		
 		switch(ex) {
+			case "basic": prog = basic_ex; break;
+			case "dataflow": prog = dfg_ex; break;
+			case "link": prog = link_ex; break;
 			case "max": prog = max_ex; break;
 			case "alt": prog = alt_ex; break;
 			case "fir": prog = fir_ex; break;

@@ -1,3 +1,14 @@
+var basic_ex = 
+  '(λx.x + x + 1) 2'
+
+var dfg_ex = 
+  '(λx.λy.(x + x) + (y + y)) (deref ({0})) 2'
+
+var link_ex = 
+  'let c = {0} in\n'
++ 'let _ = (λx.λy.(x +x)+(y +y)) (deref c) 2 in\n'
++ 'link c to {1}'
+
 var max_ex = 
   'let max = λx.λy.if x <= y then y else x in\n'
 + '\n'
