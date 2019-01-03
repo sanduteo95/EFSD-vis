@@ -1,11 +1,9 @@
-define(function(require) {
+define(['node', 'token', 'nodes/promo', 'nodes/weak'], 
+	function(Node, Token, Promo, Weak) {
 
-	var Node = require('node');
-	var CompData = require('token').CompData();
-	var RewriteFlag = require('token').RewriteFlag();
-	var Promo = require('nodes/promo');
-	var Weak = require('nodes/weak');
-
+	var CompData = Token.CompData();
+	var RewriteFlag = Token.RewriteFlag();
+	
 	class If extends Node {
 
 		constructor() {

@@ -1,6 +1,6 @@
 var showKey = false;
 
-define(function(require) {
+define(function() {
 
 	class Node {
 
@@ -15,7 +15,7 @@ define(function(require) {
 			this.width = null;
 			this.height = null;
 			this.links = [];
-			this.addToGraph(graph); // cheating!
+			this.addToGraph(window.mainGraph); // cheating!
 		}
 
 		addToGraph(graph) {

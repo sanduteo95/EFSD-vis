@@ -1,12 +1,8 @@
-define(function(require) {
+define(['token', 'term', 'link', 'nodes/expo', 'nodes/der', 'nodes/contract'], 
+	function(Token, Term, Link, Expo, Der, Contract) {
 
-	var CompData = require('token').CompData();
-	var RewriteFlag = require('token').RewriteFlag();
-	var Term = require('term');
-	var Link = require('link');
-	var Expo = require('nodes/expo');
-	var Der = require('nodes/der');
-	var Contract = require('nodes/contract');
+	var CompData = Token.CompData();
+	var RewriteFlag = Token.RewriteFlag();
 
 	class Promo extends Expo {
 

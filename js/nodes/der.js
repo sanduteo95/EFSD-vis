@@ -1,6 +1,4 @@
-define('nodes/der', function(require) {
-
-	var Expo = require('nodes/expo');
+define(['nodes/expo'], function(Expo) {
 
 	class Der extends Expo {
 
@@ -14,35 +12,4 @@ define('nodes/der', function(require) {
 		}
 	}
 	return Der;
-});
-
-
-define('nodes/var', function(require) {
-
-	var Der = require('nodes/der');
-	var Abs = require('nodes/abs');
-	var Expo = require('nodes/expo');
-
-	class Var extends Der {
-
-		constructor(name) {
-			super(name);
-			this.text = "V";
-		}
-
-		deleteAndPreserveOutLink() { 
-			var inLink = this.findLinksInto(null)[0];
-			var outLink = this.findLinksOutOf(null)[0];
-			var inNode = this.graph.findNodeByKey(inLink.from);
-			if (inLink != null && outLink != null) {
-				if (this.graph.findNodeByKey(outLink.to) instanceof Abs && (inNode instanceof Expo))
-					outLink.changeFrom(inLink.from, "nw");
-				else
-					outLink.changeFrom(inLink.from, inLink.fromPort);
-			}
-			this.delete();
-		}
-	}
-
-	return Var;
 });

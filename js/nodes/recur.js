@@ -1,11 +1,8 @@
-define(function(require) {
+define(['node', 'token', 'term', 'link', 'nodes/expo'],
+	function(Node, Token, Term, Link, Expo) {
 
-	var Node = require('node');
-	var CompData = require('token').CompData();
-	var RewriteFlag = require('token').RewriteFlag();
-	var Term = require('term');
-	var Link = require('link');
-	var Expo = require('nodes/expo');
+	var CompData = Token.CompData();
+	var RewriteFlag = Token.RewriteFlag();
 
 	class Recur extends Expo {
 

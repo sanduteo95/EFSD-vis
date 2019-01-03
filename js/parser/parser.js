@@ -1,23 +1,14 @@
-define(function(require) {
+define(['parser/token', 'ast/abstraction', 'ast/application', 'ast/identifier',
+  'ast/constant', 'ast/unary-op', 'ast/binary-op', 'ast/if-then-else', 'ast/recursion',
+  'ast/provisional-constant', 'ast/change', 'ast/assign', 'ast/propagation',
+  'ast/deprecation', 'ast/deref', 'op'],
+  function(Token, Abstraction, Application, Identifier, 
+    Constant, UnaryOp, BinaryOp, IfThenElse, Recursion,
+    ProvisionalConstant, Change, Assign, Propagation,
+    Deprecation, Dereference, Op) {
 
-  var Token = require('parser/token');
-  var Abstraction = require('ast/abstraction');
-  var Application = require('ast/application');
-  var Identifier = require('ast/identifier');
-  var Constant = require('ast/constant');
-  var UnaryOp = require('ast/unary-op');
-  var BinaryOp = require('ast/binary-op');
-  var IfThenElse = require('ast/if-then-else');
-  var Recursion = require('ast/recursion');
-  var ProvisionalConstant = require('ast/provisional-constant');
-  var Change = require('ast/change');
-  var Assign = require('ast/assign');
-  var Propagation = require('ast/propagation');
-  var Deprecation = require('ast/deprecation');
-  var Dereference = require('ast/deref');
-
-  var BinOpType = require('op').BinOpType;
-  var UnOpType = require('op').UnOpType;
+  var BinOpType = Op.BinOpType;
+  var UnOpType = Op.UnOpType;
 
   class Parser {
     constructor(lexer) {

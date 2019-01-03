@@ -1,9 +1,7 @@
-define(function(require) {
+define(['token', 'nodes/expo'], function(Token, Expo) {
 
-	var CompData = require('token').CompData();
-	var RewriteFlag = require('token').RewriteFlag();
-
-	var Expo = require('nodes/expo');
+	var CompData = Token.CompData();
+	var RewriteFlag = Token.RewriteFlag();
 
 	class Contract extends Expo {
 

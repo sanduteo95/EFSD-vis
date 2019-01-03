@@ -1,7 +1,6 @@
-define(function(require) {
+define(['node', 'token'], function(Node, Token) {
 
-	var Node = require('node');
-	var CompData = require('token').CompData();
+	var CompData = Token.CompData();
 
 	class Const extends Node {
 

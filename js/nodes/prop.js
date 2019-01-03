@@ -1,11 +1,8 @@
-define(function(require) {
+define(['node', 'token', 'box-wrapper', 'nodes/const', 'link'],
+	function(Node, Token, BoxWrapper, Const, Link) {
 
-	var Node = require('node');
-	var CompData = require('token').CompData();
-	var RewriteFlag = require('token').RewriteFlag();
-	var BoxWrapper = require('box-wrapper');
-	var Const = require('nodes/const');
-	var Link = require('link');
+	var CompData = Token.CompData();
+	var RewriteFlag = Token.RewriteFlag();
 
 	class Prop extends Node {
 		

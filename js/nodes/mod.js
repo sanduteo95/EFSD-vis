@@ -1,12 +1,9 @@
-define(function(require) {
+define(['node', 'token', 'nodes/delta', 'nodes/weak', 'nodes/contract'],
+	function(Node, Token, Delta, Weak, Contract) {
 
-	var Node = require('node');
-	var CompData = require('token').CompData();
-	var RewriteFlag = require('token').RewriteFlag();
-	var Delta = require('nodes/delta');
-	var Weak = require('nodes/weak');
-	var Contract = require('nodes/contract');
-
+	var CompData = Token.CompData();
+	var RewriteFlag =Token.RewriteFlag();
+	
 	class Mod extends Node {
 		
 		constructor() {

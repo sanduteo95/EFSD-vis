@@ -1,6 +1,4 @@
-define(function(require) {
-
-	var Group = require('group');
+define(['group'], function(Group) {
 
 	// general graph
 	class Graph {
