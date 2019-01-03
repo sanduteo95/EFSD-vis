@@ -1,6 +1,4 @@
-define(function(require) {
-
-	var Node = require('node');
+define(['node'], function(Node) {
 
 	class Expo extends Node {
 

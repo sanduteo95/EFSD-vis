@@ -1,4 +1,4 @@
-var graph = null;
+window.mainGraph = null;
 
 function union_arrays (x, y) {
   var obj = {};
@@ -15,64 +15,30 @@ function union_arrays (x, y) {
 }
 
 
-define('goi-machine', function(require) {
-	var Abstraction = require('ast/abstraction');
-	var Application = require('ast/application');
-	var Identifier = require('ast/identifier');
-	var Constant = require('ast/constant');
-	var Operation = require('ast/operation');
-	var UnaryOp = require('ast/unary-op');
-	var BinaryOp = require('ast/binary-op');
-	var IfThenElse = require('ast/if-then-else');
-	var Recursion = require('ast/recursion');
-	var ProvisionalConstant = require('ast/provisional-constant');
-	var Change = require('ast/change');
-	var Assign = require('ast/assign');
-	var Propagation = require('ast/propagation');
-	var Deprecation = require('ast/deprecation');
-	var Dereference = require('ast/deref');
-
-	var Lexer = require('parser/lexer');
-	var Parser = require('parser/parser');
-
-	var MachineToken = require('token');
-	var Link = require('link');		
-
-	var Graph = require('graph');
-	var Group = require('group');
-	var Term = require('term');
-	var BoxWrapper = require('box-wrapper');
-
-	var Expo = require('nodes/expo');
-	var Abs = require('nodes/abs');
-	var App = require('nodes/app');
-	var BinOp = require('nodes/binop');
-	var Const = require('nodes/const');
-	var Contract = require('nodes/contract');
-	var Der = require('nodes/der');
-	var Var = require('nodes/var');
-	var If = require('nodes/if');
-	var Pax = require('nodes/pax');
-	var Promo = require('nodes/promo');
-	var Recur = require('nodes/recur');
-	var Start = require('nodes/start');
-	var UnOp = require('nodes/unop');
-	var Weak = require('nodes/weak');
-	var Delta = require('nodes/delta');
-	var Set = require('nodes/set');
-	var Dep = require('nodes/dep');
-	var Deref = require('nodes/deref');
-	var Mod = require('nodes/mod');
-	var Prop = require('nodes/prop');
-	var Prov = require('nodes/prov');
-
-	var GC = require('gc');
-
+define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
+	'ast/operation', 'ast/unary-op', 'ast/binary-op', 'ast/if-then-else', 'ast/recursion',
+	'ast/provisional-constant', 'ast/change', 'ast/assign', 'ast/propagation', 
+	'ast/deprecation', 'ast/deref', 'parser/lexer', 'parser/parser', 'token', 'link',
+	'graph', 'group', 'term', 'box-wrapper', 'nodes/expo', 'nodes/abs', 'nodes/app',
+	'nodes/binop', 'nodes/const', 'nodes/contract', 'nodes/der', 'nodes/var', 
+	'nodes/if', 'nodes/pax', 'nodes/promo', 'nodes/recur', 'nodes/start', 'nodes/unop',
+	'nodes/weak', 'nodes/delta', 'nodes/set', 'nodes/dep', 'nodes/deref', 'nodes/mod',
+	'nodes/prop', 'nodes/prov', 'gc'
+], 
+	function(Abstraction, Application, Identifier, Constant, 
+		Operation, UnaryOp, BinaryOp, IfThenElse, Recursion,
+		ProvisionalConstant, Change, Assign, Propagation,
+		Deprecation, Dereference, Lexer, Parser, MachineToken, Link,
+		Graph, Group, Term, BoxWrapper, Expo, Abs, App,
+		BinOp, Const, Contract, Der, Var, 
+		If, Pax, Promo, Recur, Start, UnOp,
+		Weak, Delta, Set, Dep, Deref, Mod, Prop, Prov, GC) {
+			
 	class GoIMachine {
 		
 		constructor() {
 			this.graph = new Graph(this);
-			graph = this.graph; // cheating!
+			window.mainGraph = this.graph; // cheating!
 			this.token = new MachineToken(this); 
 			this.gc = new GC(this.graph);
 			this.count = 0;

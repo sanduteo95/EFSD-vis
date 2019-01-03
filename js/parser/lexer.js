@@ -1,6 +1,4 @@
-define(function(require) {
-
-  var Token = require('parser/token');
+define(['parser/token'], function(Token) {
 
   class Lexer {
     constructor(input) {

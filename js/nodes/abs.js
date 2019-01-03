@@ -1,9 +1,6 @@
-define(function(require) {
-	var Node = require('node');
-	var CompData = require('token').CompData();
-	var RewriteFlag = require('token').RewriteFlag();
-	var App = require('nodes/app');
-	var Expo = require('nodes/expo');	
+define(['node', 'token', 'nodes/app', 'nodes/expo'], function(Node, Token, App, Expo) {
+	var CompData = Token.CompData();
+	var RewriteFlag = Token.RewriteFlag();
 
 	class Abs extends Node {
 

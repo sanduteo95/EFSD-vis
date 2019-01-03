@@ -1,12 +1,8 @@
-define(function(require) {
+define(['node', 'token', 'box-wrapper', 'nodes/const', 'link', 'nodes/weak'], 
+	function(Node, Token, BoxWrapper, Const, Link, Weak) {
 
-	var Node = require('node');
-	var CompData = require('token').CompData();
-	var RewriteFlag = require('token').RewriteFlag();
-	var BoxWrapper = require('box-wrapper');
-	var Const = require('nodes/const');
-	var Link = require('link');
-	var Weak = require('nodes/weak');
+	var CompData = Token.CompData();
+	var RewriteFlag = Token.RewriteFlag();
 
 	class Dep extends Node {
 		

@@ -1,5 +1,4 @@
-define('group', function(require) {
-	var Node = require('node');
+define(['node'], function(Node) {
 
 	// general group in a graph (subgraph)
 	class Group extends Node {
@@ -43,32 +42,4 @@ define('group', function(require) {
 		}
 	}
 	return Group;
-});
-
-define('box', function(require) {
-	var Group = require('group');
-	// general box-ed subgraph
-	class Box extends Group {
-		constructor() {
-			super();
-			this.nodes = [];
-			this.links = [];
-		}
-
-		copy(graph) {
-			// this shouldnt be call, since every box should be inside a wrapper
-		}	
-
-		draw(level) {
-			var str = "";
-			for (let node of this.nodes) {
-				str += node.draw(level + '  ');
-			}
-			return level + 'subgraph cluster_' + this.key + ' {' 
-				 + level + '  graph[style=dotted];'
-				 + str 
-				 + level + '};';
-		}
-	}
-	return Box;
 });

@@ -1,13 +1,9 @@
-define(function(require) {
+define(['node', 'token', 'link', 'box-wrapper', 'nodes/promo', 'nodes/const', 'op'], 
+	function(Node, Token, Link, BoxWrapper, Promo, Const, Op) {
 
-	var Node = require('node');
-	var CompData = require('token').CompData();
-	var RewriteFlag = require('token').RewriteFlag();
-	var Link = require('link');
-	var BoxWrapper = require('box-wrapper');
-	var Promo = require('nodes/promo');
-	var Const = require('nodes/const');
-	var BinOpType = require('op').BinOpType;
+	var CompData = Token.CompData();
+	var RewriteFlag = Token.RewriteFlag();
+	var BinOpType = Op.BinOpType;
 
 	class BinOp extends Node {
 
