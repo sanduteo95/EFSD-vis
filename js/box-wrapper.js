@@ -106,16 +106,6 @@ define(['link', 'term', 'box', 'nodes/promo'],
 			this.prin.deleteAndPreserveInLink(); //preserve inLink
 			super.delete();
 		}
-
-		draw(level) {
-			var str = "";
-			
-			for (let node of this.nodes) {
-				str += node.draw(level);
-			}
-			
-			return str;
-		}
 	}
 
 	return BoxWrapper;

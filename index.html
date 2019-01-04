@@ -9,15 +9,7 @@
   	<script src="./js/examples.js"></script>  
   	<script>
   		$(function() {
-  			$("#btn-make-graph").button();
-  			$("#btn-refresh").button();
-  			$("#btn-play").button();
-  			$("#btn-pause").button();
-  			$("#btn-next").button();
-  			$("#btn-save").button();
-  			$("#btn-info").button();
-        	$("#cb-draw").checkboxradio(); 
-  			
+			$("#btn-play").button();
   			$("#sm-example").selectmenu({
   				change: function(event, ui) {
   					var prog;
@@ -31,7 +23,6 @@
   						case "rsum": prog = rsum_ex; break;
   					}
   					$("#ta-program").val(prog);
-  					$("#btn-make-graph").click(); 
   				}
   			});
 
@@ -50,56 +41,17 @@
 			<option value="fir">Finite impulse response filter</option>
 			<option value="rsum">Running sum</option>
 		</select>
-		<button id="btn-info">?</button>
+		<button id="btn-play">►</button>
 		<textarea id="ta-program" rows="40" spellcheck=false style="width: 100%; height: 37%; resize: none; font-size: 12px;">
 		</textarea>
-		<textarea id="ta-graph" rows="40" style="width: 100%; height: 37%; resize: none; background-color: lightgrey" readonly>
+		<textarea id="ta-result" rows="40" spellcheck=false style="width: 100%; height: 37%; resize: none; font-size: 12px;">
 		</textarea>
-	</div>
-	<div class="right">
-		<div align="center" id="graph" style="width: 100%; height: 72%; margin-bottom: 2%"></div>
-		<div align="center">
-            <label for="cb-draw">Draw</label>
-            <input type="checkbox" id="cb-draw" checked>
-				<button id="btn-refresh">↻</button>
-				<button id="btn-play">►</button>
-				<button id="btn-pause">❚❚</button>
-				<button id="btn-next">►|</button>
-		</div>
-	</div>
-	<div style="clear: both">
-		<div class="left">
-			<button id="btn-make-graph" style="width:100%;height:10%">>></button>
-		</div>
-		<div align="center" class="right">
-			<textarea id="flag" rows="4" wrap="off" class="stack-trace" style="width: 33%;"></textarea>
-	    	<textarea id="dataStack" rows="4" wrap="off" class="stack-trace" style="width: 33%;"></textarea>
-			<textarea id="boxStack" rows="4" wrap="off" class="stack-trace" style="width: 33%;"></textarea>
-			<!--<textarea id="modStack" rows="4" wrap="off" class="stack-trace" style="width: 29%;"></textarea>-->
-		</div>
-	<div>
-	<div style="clear: both;">
-		This is a simulation tool of a GoI-style abstract machine implementing the EFSD calculus.</br>
-		Implemented using <a href=https://github.com/mstefaniuk/graph-viz-d3-js target="_blank">graph-viz-d3-js</a> for generating diagrams and <a href=https://github.com/tadeuzagallo/lc-js>lo-js</a> for parsing.
 	</div>
 
 	<script src="./bower_components/requirejs/require.js" data-main="main.js"></script>
 	<script type="text/javascript">
-		var url = new URL(window.location.href);
-		var ex = url.searchParams.get('ex');
-		var prog;
-		$("#sm-example").val(ex);
-		
-		switch(ex) {
-			case "basic": prog = basic_ex; break;
-			case "dataflow": prog = dfg_ex; break;
-			case "link": prog = link_ex; break;
-			case "max": prog = max_ex; break;
-			case "alt": prog = alt_ex; break;
-			case "fir": prog = fir_ex; break;
-			case "rsum": prog = rsum_ex; break;
-			default: prog = max_ex;$("#sm-example").val("max")
-		}
+		var prog = basic_ex;
+		$("#sm-example").val("basic");
 		$("#ta-program").val(prog);
 	</script>
 </body>

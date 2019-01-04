@@ -42,25 +42,6 @@ define(['group'], function(Group) {
 		removeLink(link) {
 			this.allLinks.splice(this.allLinks.indexOf(link), 1);
 		}
-
-		draw(width, height) {
-			var str = this.child.draw('\n  ');
-			str += '\n';
-			for (let link of this.allLinks) {
-				str += link.draw('\n  ');
-			}
-			return 'digraph G {'
-			   	+'\n  rankdir=BT;'
-			   	+'\n  edge[arrowhead=none,arrowtail=none];'
-			   	+'\n  node[fixedsize=true,shape=circle,style=filled]'
-			   	+'\n  size="' + width + ',' + height + '";'
-			   	+'\n  labeldistance=0;'
-			   	+'\n  nodesep=.175;'
-	  			+'\n  ranksep=.175;'
-				+'\n' 
-				+     str 
-			   	+'\n}';
-		}
 	}
 
 	return Graph;

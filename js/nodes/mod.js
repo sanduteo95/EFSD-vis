@@ -1,5 +1,5 @@
-define(['node', 'token', 'nodes/delta', 'nodes/weak', 'nodes/contract'],
-	function(Node, Token, Delta, Weak, Contract) {
+define(['node', 'token', 'nodes/delta', 'nodes/weak', 'nodes/contract', 'helper'],
+	function(Node, Token, Delta, Weak, Contract, Helper) {
 
 	var CompData = Token.CompData();
 	var RewriteFlag =Token.RewriteFlag();
@@ -30,7 +30,7 @@ define(['node', 'token', 'nodes/delta', 'nodes/weak', 'nodes/contract'],
 		update(data) {
 			var leftLink = this.findLinksOutOf("w")[0]; 
 
-			if ((isNumber(data) || typeof(data) === "boolean")) {
+			if ((Helper.isNumber(data) || typeof(data) === "boolean")) {
 				var value = this.graph.findNodeByKey(leftLink.to);
 				var oldData = value.name;
 				value.text = data;

@@ -1,5 +1,5 @@
-define(['node', 'token', 'nodes/mod', 'nodes/const', 'link'],
-	function(Node, Token, Mod, Const, Link) {
+define(['node', 'token', 'nodes/mod', 'nodes/const', 'link', 'helper'],
+	function(Node, Token, Mod, Const, Link, Helper) {
 
 	var CompData = Token.CompData();
 	var RewriteFlag = Token.RewriteFlag();
@@ -32,7 +32,7 @@ define(['node', 'token', 'nodes/mod', 'nodes/const', 'link'],
 				token.rewriteFlag = RewriteFlag.EMPTY;
 				var data = token.dataStack.pop();
 
-				if ((isNumber(data[0]) || typeof(data[0]) === "boolean")) {
+				if ((Helper.isNumber(data[0]) || typeof(data[0]) === "boolean")) {
 					var mod = new Mod().addToGroup(this.group);
 					var con = new Const(data[0]).addToGroup(this.group);
 					new Link(mod.key, con.key, "w", "s").addToGroup(this.group); 
