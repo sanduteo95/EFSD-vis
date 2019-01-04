@@ -23,7 +23,6 @@ require(["jquery", "goi-machine"],
 				data = machine.pass();
 			} 
 			if (machine.isFinished()) {
-				console.log('RESULT: ' + data);
 				$("#ta-result").val(data);
 			} else {
 				$("#ta-result").val("Calculating...");
