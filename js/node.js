@@ -15,7 +15,7 @@ define(function() {
 			this.width = null;
 			this.height = null;
 			this.links = [];
-			this.addToGraph(window.mainGraph); // cheating!
+			this.addToGraph(global.mainGraph); // cheating!
 		}
 
 		addToGraph(graph) {

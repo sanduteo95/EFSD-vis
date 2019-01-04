@@ -1,4 +1,4 @@
-window.mainGraph = null;
+global.mainGraph = null;
 
 define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 	'ast/operation', 'ast/unary-op', 'ast/binary-op', 'ast/if-then-else', 'ast/recursion',
@@ -23,7 +23,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		
 		constructor() {
 			this.graph = new Graph(this);
-			window.mainGraph = this.graph; // cheating!
+			global.mainGraph = this.graph; // cheating!
 			this.token = new MachineToken(this); 
 			this.count = 0;
 

@@ -11,7 +11,7 @@ define(function() {
 
 			this.colour = null;
 			this.penWidth = null;
-			this.addToGraph(window.mainGraph); // cheating
+			this.addToGraph(global.mainGraph); // cheating
 			this.addToNode(); // cheating
 		}
 
