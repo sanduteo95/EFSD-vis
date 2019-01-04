@@ -83,33 +83,6 @@ define(function() {
 		toString() {
 			return this.from + "->" + this.to;
 		}
-
-		draw(level) {
-			var str = level;
-
-			if (!this.reverse) {
-				str += this.from + '->' + this.to + '[';
-				if (this.fromPort != null)
-					str += 'tailport=' + this.fromPort;
-				if (this.toPort != null)
-					str += ',headport=' + this.toPort;
-			}
-			else {
-				str += this.to + '->' + this.from + '[dir=back';
-				if (this.fromPort != null)
-					str += ',headport=' + this.fromPort;
-				if (this.toPort != null)
-					str += ',tailport=' + this.toPort;
-			}
-
-			if (this.colour != null)
-				str += ',color=' + this.colour;
-			if (this.penWidth != null)
-				str += ',penwidth=' + this.penWidth;
-
-			str += '];';
-			return str;
-		}
 	}
 
 	return Link;

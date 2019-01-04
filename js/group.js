@@ -32,14 +32,6 @@ define(['node'], function(Node) {
 			}
 			super.delete();
 		}
-
-		draw(level) {
-			var str = "";
-			for (let node of this.nodes) {
-				str += node.draw(level);
-			}
-			return str;
-		}
 	}
 	return Group;
 });

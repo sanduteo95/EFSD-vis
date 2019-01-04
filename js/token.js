@@ -1,6 +1,4 @@
 define(function() {
-
-
 	var CompData = {
 		EMPTY: '-',
 		PROMPT: '*',

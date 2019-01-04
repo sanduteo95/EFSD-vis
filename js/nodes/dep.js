@@ -1,5 +1,5 @@
-define(['node', 'token', 'box-wrapper', 'nodes/const', 'link', 'nodes/weak'], 
-	function(Node, Token, BoxWrapper, Const, Link, Weak) {
+define(['node', 'token', 'box-wrapper', 'nodes/const', 'link', 'nodes/weak', 'helper'], 
+	function(Node, Token, BoxWrapper, Const, Link, Weak, Helper) {
 
 	var CompData = Token.CompData();
 	var RewriteFlag = Token.RewriteFlag();
@@ -32,7 +32,7 @@ define(['node', 'token', 'box-wrapper', 'nodes/const', 'link', 'nodes/weak'],
 				token.rewriteFlag = RewriteFlag.EMPTY;
 				var data = token.dataStack.last();
 
-				if ((isNumber(data[0]) || typeof(data[0]) === "boolean")) {
+				if ((Helper.isNumber(data[0]) || typeof(data[0]) === "boolean")) {
 					var outLink = this.findLinksOutOf(null)[0]; 
 					var weak = new Weak(outLink.text).addToGroup(this.group);
 					outLink.changeFrom(weak.key, "n");

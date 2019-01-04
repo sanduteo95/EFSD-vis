@@ -10,17 +10,6 @@ define(['group'], function(Group) {
 
 		copy(graph) {
 			// this shouldnt be call, since every box should be inside a wrapper
-		}	
-
-		draw(level) {
-			var str = "";
-			for (let node of this.nodes) {
-				str += node.draw(level + '  ');
-			}
-			return level + 'subgraph cluster_' + this.key + ' {' 
-				 + level + '  graph[style=dotted];'
-				 + str 
-				 + level + '};';
 		}
 	}
 	return Box;

@@ -21,11 +21,6 @@ define(['node', 'token'], function(Node, Token) {
 		copy() {
 			return new Start();
 		}
-
-		draw(level) {
-			return level + this.key + '[shape=' + this.shape + '];'; 
-		}
-
 	}
 
 	return Start;

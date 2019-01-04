@@ -1,20 +1,5 @@
 window.mainGraph = null;
 
-function union_arrays (x, y) {
-  var obj = {};
-  for (var i = x.length-1; i >= 0; -- i)
-     obj[x[i]] = x[i];
-  for (var i = y.length-1; i >= 0; -- i)
-     obj[y[i]] = y[i];
-  var res = []
-  for (var k in obj) {
-    if (obj.hasOwnProperty(k))  // <-- optional
-      res.push(obj[k]);
-  }
-  return res;
-}
-
-
 define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 	'ast/operation', 'ast/unary-op', 'ast/binary-op', 'ast/if-then-else', 'ast/recursion',
 	'ast/provisional-constant', 'ast/change', 'ast/assign', 'ast/propagation', 
@@ -23,7 +8,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 	'nodes/binop', 'nodes/const', 'nodes/contract', 'nodes/der', 'nodes/var', 
 	'nodes/if', 'nodes/pax', 'nodes/promo', 'nodes/recur', 'nodes/start', 'nodes/unop',
 	'nodes/weak', 'nodes/delta', 'nodes/set', 'nodes/dep', 'nodes/deref', 'nodes/mod',
-	'nodes/prop', 'nodes/prov', 'gc'
+	'nodes/prop', 'nodes/prov'
 ], 
 	function(Abstraction, Application, Identifier, Constant, 
 		Operation, UnaryOp, BinaryOp, IfThenElse, Recursion,
@@ -32,7 +17,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		Graph, Group, Term, BoxWrapper, Expo, Abs, App,
 		BinOp, Const, Contract, Der, Var, 
 		If, Pax, Promo, Recur, Start, UnOp,
-		Weak, Delta, Set, Dep, Deref, Mod, Prop, Prov, GC) {
+		Weak, Delta, Set, Dep, Deref, Mod, Prop, Prov) {
 			
 	class GoIMachine {
 		
@@ -40,7 +25,6 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 			this.graph = new Graph(this);
 			window.mainGraph = this.graph; // cheating!
 			this.token = new MachineToken(this); 
-			this.gc = new GC(this.graph);
 			this.count = 0;
 
 			this.token.isMain = true;
@@ -49,6 +33,34 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 			this.evaluating = false;
 			this.newValues = new Map();
 			this.hasUpdate = false;
+
+			this.play = false;
+			this.playing = false;
+			this.finished = false;
+		}
+
+		isPlay () {
+			return this.playing;
+		}
+
+		setPlay (playValue) {
+			this.play = playValue;
+		}
+
+		isPlaying () {
+			return this.playing;
+		}
+
+		setPlaying (playingValue) {
+			this.playing = playingValue;
+		}
+
+		isFinished () {
+			return this.finished;
+		}
+
+		setFinished (finishedValue) {
+			this.finished = finishedValue;
 		}
 
 		compile(source) {
@@ -321,16 +333,6 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 
 		batchPass(tokens) {
 			var arr_2 = Array.from(tokens);
-			// random
-			/*
-			var arr = Array.from(new Array(tokens.length),(val,index)=>index+1);
-			this.shuffle(arr);
-			for (var i=0; i<arr.length; i++) {
-				var token = arr_2[arr[i]-1];
-				this.tokenPass(token, flag, dataStack, boxStack, modStack);
-			}
-			*/
-			
 			// all progress 1 step
 			for (var i=0; i<arr_2.length; i++) {
 				var token = arr_2[i];
@@ -340,15 +342,8 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		}
 
 		// machine step
-		pass(flag, dataStack, boxStack, modStack) {	
-			if (!finished) {
-				/*
-				this.count++;
-				if (this.count == 200) {
-					this.count = 0;
-					this.gc.collect();
-				}
-				*/
+		pass() {
+			if (!this.isFinished()) {
 				if (this.evaluating) {
 					this.batchPass(this.evalTokens);
 					if (this.evalTokens.length == 0) {
@@ -366,11 +361,13 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 				}
 
 				else
-					this.tokenPass(this.token, flag, dataStack, boxStack);
+					this.tokenPass(this.token);
 			}
+
+			return this.getData(this.token);
 		}
 
-		tokenPass(token, flag, dataStack, boxStack) {
+		tokenPass(token) {
 			var node;
 			if (!token.transited) {
 				if (token.link != null) {
@@ -384,55 +381,38 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 
 				token.rewrite = false;
 				nextLink = node.transition(token, token.link);
-				console.log(nextLink);
-
 
 				if (nextLink != null) {
 					token.setLink(nextLink);
 					token.transited = true;
-					if (token.isMain) {
-						this.printHistory(token, flag, dataStack, boxStack); 
-					}
 				}
 				else {
 					token.transited = false;
 					if (token.isMain) {
 						token.setLink(null);
-						//this.gc.collect();
-						play = false;
-						playing = false;
-						finished = true;
+						this.setPlay(false);
+						this.setPlaying(false);
+						this.setFinished(true);
 					}
 					else
 						token.setLink(token.link);
 				}
-			}
-
-			else {
+			} else {
 				var target = token.forward ? token.link.from : token.link.to;
 				node = this.graph.findNodeByKey(target);
 				var nextLink = node.rewrite(token, token.link);
-				console.log(nextLink);
 				if (!token.rewrite) {
 					token.transited = false;
-					this.tokenPass(token, flag, dataStack, boxStack); 
+					this.tokenPass(token); 
 				}
 				else {
 					token.setLink(nextLink);
-					if (token.isMain)
-						this.printHistory(token, flag, dataStack, boxStack);
 				}
 			}
 		}
 
-		
-
-		printHistory(token, flag, dataStack, boxStack) {
-			flag.val(token.rewriteFlag + '\n' + flag.val());
-			var dataStr = token.dataStack.length == 0 ? '□' : Array.from(token.dataStack).reverse().toString() + ',□';
-			dataStack.val(dataStr + '\n' + dataStack.val());
-			var boxStr = token.boxStack.length == 0 ? '□' : Array.from(token.boxStack).reverse().toString() + ',□';
-			boxStack.val(boxStr + '\n' + boxStack.val());
+		getData(token) {
+			return token.dataStack.length == 0 ? '□' : Array.from(token.dataStack).reverse().toString() + ',□';
 		}
 
 	}

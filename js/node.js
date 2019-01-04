@@ -71,21 +71,6 @@ define(function() {
 			this.graph.removeNode(this);
 		}
 
-		draw(level) {
-			var str = level + this.key + '[label="' + this.text; 
-			if (showKey)
-				str += ':' + this.key;
-			str += '"';
-			if (this.shape != null)
-				str += ',shape=' + this.shape;
-			if (this.width != null)
-				str += ',width=' + this.width;
-			if (this.height != null)
-				str += ',height=' + this.height;
-			str += ',fillcolor=' + this.colour;
-			return str += '];'
-		}
-
 		// machine instructions
 		transition(token, link) {
 			return link;
