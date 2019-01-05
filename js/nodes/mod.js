@@ -21,7 +21,7 @@ define(['node', 'token', 'nodes/delta', 'nodes/weak', 'nodes/contract', 'helper'
 				return this.findLinksInto(null)[0]; 
 			}
 			else if (link.from == this.key && link.fromPort == "e") {
-				token.machine.newValues.set(this.key, token.dataStack.last()[0]);
+				token.machine.newValues.set(this.key, token.dataStack[token.dataStack.length - 1][0]);
 				token.delete();
 				return null;
 			}

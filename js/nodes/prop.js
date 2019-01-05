@@ -12,7 +12,7 @@ define(['node', 'token', 'box-wrapper', 'nodes/const', 'link'],
 
 		transition(token, link) {
 			if (link.to == this.key) {
-				if (token.dataStack.last() == CompData.PROMPT) {
+				if (token.dataStack[token.dataStack.length - 1] == CompData.PROMPT) {
 					token.dataStack.pop();
 					token.dataStack.push(false);
 					token.rewriteFlag = RewriteFlag.F_PROP;
