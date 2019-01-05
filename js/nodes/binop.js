@@ -47,7 +47,7 @@ define(['node', 'token', 'link', 'box-wrapper', 'nodes/promo', 'nodes/const', 'o
 
 				if (left instanceof Promo && right instanceof Promo) {
 					var wrapper = BoxWrapper.create().addToGroup(this.group);
-					var newConst = new Const(token.dataStack.last()[0]).addToGroup(wrapper.box);
+					var newConst = new Const(token.dataStack[token.dataStack.length - 1][0]).addToGroup(wrapper.box);
 					new Link(wrapper.prin.key, newConst.key, "n", "s").addToGroup(wrapper);
 					nextLink.changeTo(wrapper.prin.key, "s");
 					

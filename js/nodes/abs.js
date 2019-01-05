@@ -10,7 +10,7 @@ define(['node', 'token', 'nodes/app', 'nodes/expo'], function(Node, Token, App, 
 		
 		transition(token, link) {
 			if (link.to == this.key && link.toPort == "s") {
-				var data = token.dataStack.last();
+				var data = token.dataStack[token.dataStack.length - 1];
 				if (data == CompData.PROMPT) {
 					token.dataStack.pop();
 					token.dataStack.push([CompData.LAMBDA,CompData.EMPTY]);

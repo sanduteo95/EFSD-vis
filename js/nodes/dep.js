@@ -30,7 +30,7 @@ define(['node', 'token', 'box-wrapper', 'nodes/const', 'link', 'nodes/weak', 'he
 		rewrite(token, nextLink) {
 			if (nextLink.to == this.key && token.rewriteFlag == RewriteFlag.F_DEP) {
 				token.rewriteFlag = RewriteFlag.EMPTY;
-				var data = token.dataStack.last();
+				var data = token.dataStack[token.dataStack.length - 1];
 
 				if ((Helper.isNumber(data[0]) || typeof(data[0]) === "boolean")) {
 					var outLink = this.findLinksOutOf(null)[0]; 

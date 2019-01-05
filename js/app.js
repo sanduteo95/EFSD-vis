@@ -1,7 +1,3 @@
-Array.prototype.last = function() {
-    return this[this.length-1];
-}
-
 require(["jquery", "goi-machine"],
 	function ($, machine) {
 		$("#btn-play").click(function(event) {

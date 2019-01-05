@@ -41,13 +41,13 @@ define(['token', 'nodes/expo'], function(Token, Expo) {
 					this.delete();
 				}
 				else {
-					var i = token.boxStack.last();
+					var i = token.boxStack[token.boxStack.length - 1];
 					var prev = this.graph.findNodeByKey(i.from);
 					if (prev instanceof Contract) {
 						token.boxStack.pop();
 						/*
 						for (let _token of Array.from(nextLink.tokens)) {
-							if (_token.boxStack.last() == i)
+							if (_token.boxStack[token.boxStack.length - 1] == i)
 								_token.boxStack.pop();
 						}
 						for (let _token of Array.from(i.tokens)) {

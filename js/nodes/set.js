@@ -46,7 +46,7 @@ define(['node', 'token', 'box-wrapper', 'nodes/const', 'link', 'nodes/weak'],
 				var data = s[1];
 				token.rewriteFlag = RewriteFlag.EMPTY;
 
-				var data = token.dataStack.last();
+				var data = token.dataStack[token.dataStack.length - 1];
 				var weak1 = new Weak().addToGroup(this.group);
 				this.findLinksOutOf("w")[0].changeFrom(weak1.key, "n");
 
