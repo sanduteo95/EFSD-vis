@@ -52,6 +52,6 @@ define(["goi-machine"],
 			}
         }
 
-        exports.interpret = interpret;
+        return interpret;
 	}
 );
