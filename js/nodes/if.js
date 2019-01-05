@@ -19,14 +19,14 @@ define(['node', 'token', 'nodes/promo', 'nodes/weak'],
 			else if (link.from == this.key && link.fromPort == "w") {
 				var left = this.graph.findNodeByKey(this.findLinksOutOf("w")[0].to);
 				if (left instanceof Promo) {
-					if (token.dataStack.last()[0] == true) {
+					if (token.dataStack[token.dataStack.length - 1][0] == true) {
 						var nextLink = this.findLinksOutOf("n")[0];
 						token.dataStack.pop();
 						token.rewriteFlag = RewriteFlag.F_IF;
 						token.forward = true;
 						return nextLink; 
 					}
-					else if (token.dataStack.last()[0] == false) {
+					else if (token.dataStack[token.dataStack.length - 1][0] == false) {
 						var nextLink = this.findLinksOutOf("e")[0];
 						token.dataStack.pop();
 						token.rewriteFlag = RewriteFlag.F_IF;

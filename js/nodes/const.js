@@ -9,7 +9,7 @@ define(['node', 'token'], function(Node, Token) {
 		}
 		
 		transition(token, link) {
-			if (token.dataStack.last() == CompData.PROMPT) {
+			if (token.dataStack[token.dataStack.length - 1] == CompData.PROMPT) {
 				token.dataStack.pop();
 				token.dataStack.push([this.name,CompData.EMPTY]);
 				token.forward = false;
