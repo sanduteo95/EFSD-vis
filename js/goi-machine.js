@@ -1,5 +1,3 @@
-window.mainGraph = null;
-
 define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 	'ast/operation', 'ast/unary-op', 'ast/binary-op', 'ast/if-then-else', 'ast/recursion',
 	'ast/provisional-constant', 'ast/change', 'ast/assign', 'ast/propagation', 
@@ -8,7 +6,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 	'nodes/binop', 'nodes/const', 'nodes/contract', 'nodes/der', 'nodes/var', 
 	'nodes/if', 'nodes/pax', 'nodes/promo', 'nodes/recur', 'nodes/start', 'nodes/unop',
 	'nodes/weak', 'nodes/delta', 'nodes/set', 'nodes/dep', 'nodes/deref', 'nodes/mod',
-	'nodes/prop', 'nodes/prov'
+	'nodes/prop', 'nodes/prov', 'helper'
 ], 
 	function(Abstraction, Application, Identifier, Constant, 
 		Operation, UnaryOp, BinaryOp, IfThenElse, Recursion,
@@ -17,13 +15,13 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		Graph, Group, Term, BoxWrapper, Expo, Abs, App,
 		BinOp, Const, Contract, Der, Var, 
 		If, Pax, Promo, Recur, Start, UnOp,
-		Weak, Delta, Set, Dep, Deref, Mod, Prop, Prov) {
+		Weak, Delta, Set, Dep, Deref, Mod, Prop, Prov, Helper) {
 			
 	class GoIMachine {
 		
 		constructor() {
 			this.graph = new Graph(this);
-			window.mainGraph = this.graph; // cheating!
+			Helper.graph = this.graph; // cheating!
 			this.token = new MachineToken(this); 
 			this.count = 0;
 

@@ -1,16 +1,35 @@
-require(["jquery", "goi-machine"],
-	function ($, machine) {
-		$("#btn-play").click(function(event) {
+define(["goi-machine"],
+	function (machine) {
+		function interpret (program, addTiming) {
+            // start time
+            if (addTiming) {
+                if (global.__residual) {
+                    global.__residual('void', console => {
+                        console.time('time');
+                    }, abstractedConsole);
+                } else {
+                    console.time('time');
+                }
+            }
 			machine.setPlay(false);
 			machine.setPlaying(false);
-			var source = $("#ta-program").val();
-			machine.compile(source);
+			machine.compile(program);
 			machine.setPlay(true);
 			machine.setFinished(false);
 			if (!machine.isPlaying()) {
-				autoPlay();
+                // end time
+                if (addTiming) {
+                    if (global.__residual) {
+                        global.__residual('void', console => {
+                            console.timeEnd('time');
+                        }, abstractedConsole);
+                    } else {
+                        console.timeEnd('time');
+                    }
+                } 
+				return autoPlay();
 			}
-		});
+		}
 
 		function autoPlay () {
 			machine.setPlaying(true);
@@ -19,15 +38,16 @@ require(["jquery", "goi-machine"],
 				data = machine.pass();
 			} 
 			if (machine.isFinished()) {
-				$("#ta-result").val(data);
+				return data;
 			} else {
-				$("#ta-result").val("Calculating...");
 				if (machine.isPlay()) {
-					setTimeout(autoPlay, 0);
+					return autoPlay();
 				} else {
 					machine.setPlaying(false);
 				}
 			}
-		}
+        }
+
+        return interpret;
 	}
 );

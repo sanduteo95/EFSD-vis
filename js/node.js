@@ -1,6 +1,6 @@
 var showKey = false;
 
-define(function() {
+define(['helper'], function(Helper) {
 
 	class Node {
 
@@ -15,7 +15,7 @@ define(function() {
 			this.width = null;
 			this.height = null;
 			this.links = [];
-			this.addToGraph(window.mainGraph); // cheating!
+			this.addToGraph(Helper.graph); // cheating!
 		}
 
 		addToGraph(graph) {

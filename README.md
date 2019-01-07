@@ -1,3 +1,8 @@
+# EFSD visualiser for the terminal
+For the simplified UI version switch to branch [UI](https://github.com/sanduteo95/EFSD-vis/tree/UI).
+
+This fork contains a stripped version of [EFSD-vis](https://github.com/anonymousgithubaccount/EFSD-vis) with the UI functionality removed and a few changes so that it can be run in Node.js and have the First Futamura Projection applied to it. Cannot be used as it is- it needs to be ran through a preprocessor implemented in a private repo. 
+
 ## Syntax
 ```
 <var> ::= {variables}
