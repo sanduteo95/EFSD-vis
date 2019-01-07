@@ -39,7 +39,6 @@ define(["goi-machine"],
 		}
 
 		function autoPlay (termCalls, maxTermCalls, callback) {
-			console.log(termCalls);
 			machine.setPlaying(true);
 			let data = "";
 			if (!machine.isFinished()) {
