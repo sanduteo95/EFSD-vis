@@ -1,4 +1,4 @@
-define(function() {
+define(['helper'], function(Helper) {
 
 	class Link {
 
@@ -11,7 +11,7 @@ define(function() {
 
 			this.colour = null;
 			this.penWidth = null;
-			this.addToGraph(window.mainGraph); // cheating
+			this.addToGraph(Helper.mainGraph); // cheating
 			this.addToNode(); // cheating
 		}
 

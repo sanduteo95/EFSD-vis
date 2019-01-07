@@ -1,7 +1,13 @@
 define(function () {
     // needed by nodes/mod, nodes/prov, nodes/dep
 
-    exports.isNumber = function (n) {
+    function isNumber (n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
-    };
+    }
+
+    var graph = null;
+    return {
+        isNumber: isNumber,
+        graph: graph
+    }
 });
