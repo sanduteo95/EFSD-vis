@@ -14,8 +14,8 @@ requirejs.config({
 		worker: '../bower_components/requirejs-web-workers/src/worker',
 		renderer: '../bower_components/graphviz-d3-renderer/dist/renderer',
 		jquery: '../bower_components/jquery/dist/jquery',
-		// "goi-machine": './goi-machine',
-		"goi-machine": '../../tas458/lib/EFSD/v1/goi-machine.requirejs',
+		"goi-machine": './goi-machine',
+		// "goi-machine": '../../tas458/lib/EFSD/v1/goi-machine.requirejs',
 	},
 	shim: {
 		jquery: {
