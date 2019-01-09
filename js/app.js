@@ -86,7 +86,7 @@ define(["goi-machine"],
 					}
 				} 
 				mainCallback(err, result);
-			});
+			}, addTiming);
 		};
 	}
 );
