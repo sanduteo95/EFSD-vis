@@ -5,9 +5,8 @@ define(function () {
         return !isNaN(parseFloat(n)) && isFinite(n);
     }
 
-    var graph = null;
     return {
         isNumber: isNumber,
-        graph: graph
+        graph: null
     }
 });
