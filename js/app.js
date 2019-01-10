@@ -60,11 +60,17 @@ define(["goi-machine"],
 						if (global.__residual) {
 							// if we're in Prepack, and weve reached its maximum nubmer of calls
 							if (termCalls > maxTermCalls/3) {
-								// set to 0 because up till now Prepack evaluated everything
-								termCalls = 0;
-								global.__residual("void", function(autoPlay, callback) {
-									autoPlay (callback);
-								}, autoPlay, callback);
+								if (termCalls > maxTermCalls) {
+									// set to 0 because up till now Prepack evaluated everything
+									termCalls = 0;
+									global.__residual("void", function(autoPlay, callback) {
+										autoPlay (callback);
+									}, autoPlay, callback);
+								} else {
+									setTimeout(function () {
+										autoPlay (callback);
+									}, CALLBACK_TIMEOUT);
+								}
 							} else {
 								// just call the function as it is
 								autoPlay (callback);
