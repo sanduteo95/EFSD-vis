@@ -10,7 +10,7 @@ define(["goi-machine"],
 			// global variables used to set-up timeouts to avoid stack overflow 
 			var termCalls = 0;
 			maxTermCalls = maxTermCalls || 125;
-			var CALLBACK_TIMEOUT = 100;
+			var CALLBACK_TIMEOUT = 0;
 
 			function interpret (program, callback, addTiming) {
 				// start time
@@ -36,12 +36,25 @@ define(["goi-machine"],
 			function autoPlay (callback) {
 				termCalls++;
 				machine.setPlaying(true);
-				let data = "";
+				let result;
 				if (!machine.isFinished()) {
-					data = machine.pass();
+					result = machine.pass();
 				} 
 				if (machine.isFinished()) {
-					callback(null, data);
+					if (typeof result === 'function') {
+						callback(null, function () {
+							machine.setPlay(false);
+							machine.setPlaying(false);
+							result(arguments[0]);
+							machine.setPlay(true);
+							machine.setFinished(false);
+							if (!machine.isPlaying()) {
+								autoPlay(callback);
+							}
+						});
+					} else {
+						callback(null, result);
+					}
 				} else {
 					if (machine.isPlay()) {
 						if (global.__residual) {

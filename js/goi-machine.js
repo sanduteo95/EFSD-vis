@@ -330,6 +330,15 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		}
 
 		batchPass(tokens) {
+			// random	
+			/*	
+			var arr = Array.from(new Array(tokens.length),(val,index)=>index+1);	
+			this.shuffle(arr);	
+			for (var i=0; i<arr.length; i++) {	
+				var token = arr_2[arr[i]-1];	
+				this.tokenPass(token, flag, dataStack, boxStack, modStack);	
+			}	
+			*/
 			var arr_2 = Array.from(tokens);
 			// all progress 1 step
 			for (var i=0; i<arr_2.length; i++) {
@@ -342,6 +351,13 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		// machine step
 		pass() {
 			if (!this.isFinished()) {
+				/*	
+				this.count++;	
+				if (this.count == 200) {	
+					this.count = 0;	
+					this.gc.collect();	
+				}	
+				*/
 				if (this.evaluating) {
 					this.batchPass(this.evalTokens);
 					if (this.evalTokens.length == 0) {
@@ -383,6 +399,10 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 				if (nextLink != null) {
 					token.setLink(nextLink);
 					token.transited = true;
+					if (token.isMain) {	
+						// prints progress
+						// console.log(this.getData(token));
+					}
 				}
 				else {
 					token.transited = false;
@@ -410,7 +430,63 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		}
 
 		getData(token) {
-			return token.dataStack.length == 0 ? '□' : Array.from(token.dataStack).reverse().toString() + ',□';
+			var dataStack = Array.from(token.dataStack).reverse();
+			dataStack.push('□');
+
+			// the latest value is stored in the first element in the dataStack
+			var data = dataStack[0];
+
+			// data consists of the last node and it's link
+			// TODO: need to make a distinction between abstraction and anything else
+			if (data[0] === 'λ' || data[1] !== '-') {
+				var machine = this;
+				// this means it doesn't return a simple value
+				return function (source) {
+					// TODO: needs to compile a new machine formed of 
+					// current machine plus the one frm the arguments (???)
+					const lexer = new Lexer(source + '\0');
+					const parser = new Parser(lexer);
+					const ast = parser.parse();
+					console.log('ast');
+					console.log(ast);
+					// init
+					machine.token.reset();
+		
+					machine.evalTokens = [];
+					machine.cells = [];
+					machine.readyEvalTokens = 0;
+					machine.evaluating = false;
+					machine.newValues.clear();
+					machine.hasUpdate = false;
+
+					// add to graph
+					// TODO: needs to be abstraction
+					var start = new Start().addToGroup(machine.graph.child);
+
+					var app = new App().addToGroup(machine.graph.child);
+					//lhs
+					var left = machine.graph;
+					var der = new Der(left.prin.name).addToGroup(machine.graph.child);
+					new Link(der.key, left.prin.key, "n", "s").addToGroup(machine.graph.child);
+					// rhs
+					var right = this.toGraph(ast.rhs, machine.graph.child);		
+					
+					new Link(app.key, der.key, "w", "s").addToGroup(machine.graph.child);
+					new Link(app.key, right.prin.key, "e", "s").addToGroup(machine.graph.child);
+
+					var term = new Term(app, Term.joinAuxs(left.auxs, right.auxs, machine.graph.child));
+
+					new Link(start.key, term.prin.key, "n", "s").addToGroup(machine.graph.child);
+					machine.deleteVarNode(machine.graph.child);
+				};
+			} else {
+				if (data[0] === '•') {
+					// this represents the unit so it doesn't return anything
+					return undefined;
+				} else {
+					return data[0];
+				}
+			}
 		}
 
 	}
