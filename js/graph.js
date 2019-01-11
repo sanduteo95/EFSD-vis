@@ -20,7 +20,12 @@ define(['group'], function(Group) {
 		addNode(node, key) {
 			node.key = (key ? key : 'nd' + this.key);
 			this.allNodes.set(node.key, node);
-			this.key++;
+			if (key) {
+				this.key = parseInt(key.substring(2)) + 1;
+				console.log('updated key to ' + this.key)
+			} else {
+				this.key++;
+			}
 		}
 
 		// also removes connected links

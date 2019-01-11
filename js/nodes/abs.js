@@ -9,6 +9,7 @@ define(['node', 'token', 'nodes/app', 'nodes/expo'], function(Node, Token, App, 
 		}
 		
 		transition(token, link) {
+			console.log(link.toPort);
 			if (link.to == this.key && link.toPort == "s") {
 				var data = token.dataStack[token.dataStack.length - 1];
 				if (data == CompData.PROMPT) {
