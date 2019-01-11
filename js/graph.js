@@ -17,8 +17,8 @@ define(['group'], function(Group) {
 		}
 
 		// give a key to a node and add it to allNodes
-		addNode(node) {
-			node.key = 'nd' + this.key;
+		addNode(node, key) {
+			node.key = (key ? key : 'nd' + this.key);
 			this.allNodes.set(node.key, node);
 			this.key++;
 		}

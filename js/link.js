@@ -16,8 +16,11 @@ define(['helper'], function(Helper) {
 		}
 
 		addToNode() {
+			console.log(this.graph);
+			console.log('from: ' + this.from);
 			var fromNode = this.graph.findNodeByKey(this.from);
 			fromNode.links.push(this);
+			console.log('to: ' + this.to);
 			var toNode = this.graph.findNodeByKey(this.to);
 			toNode.links.push(this);
 		}

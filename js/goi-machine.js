@@ -436,21 +436,22 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 			// the latest value is stored in the first element in the dataStack
 			var data = dataStack[0];
 
+			console.log(dataStack);
+
 			// data consists of the last node and it's link
 			// TODO: need to make a distinction between abstraction and anything else
 			if (data[0] === 'λ' || data[1] !== '-') {
 				var machine = this;
 				// this means it doesn't return a simple value
 				return function (source) {
-					// TODO: needs to compile a new machine formed of 
-					// current machine plus the one frm the arguments (???)
+					// create AST of the future abstract arguments
 					const lexer = new Lexer(source + '\0');
 					const parser = new Parser(lexer);
 					const ast = parser.parse();
-					console.log('ast');
-					console.log(ast);
+
 					// init
 					machine.token.reset();
+					machine.count = 0;
 		
 					machine.evalTokens = [];
 					machine.cells = [];
@@ -459,25 +460,70 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 					machine.newValues.clear();
 					machine.hasUpdate = false;
 
-					// add to graph
-					// TODO: needs to be abstraction
+					// create the lhs by getting the node pointed to by the start node
+					// the start node will always have key nd1
+					var oldStart = machine.graph.findNodeByKey("nd1");
+					// the start node will point to the left element
+					var left = machine.graph.findNodeByKey(oldStart.links[0].to);
+					var leftName = left.group.prin.name;
+					var leftKey = left.group.prin.key;
+					var leftNodes = left.allNodes;
+					var leftLinks = left.allLinks
+
+					// clear old graph now, because we don't need it anymore
+					machine.graph.clear();
+					Helper.graph = machine.graph;
+
+					// create new graph with new start node and term consisting of app
 					var start = new Start().addToGroup(machine.graph.child);
 
 					var app = new App().addToGroup(machine.graph.child);
-					//lhs
-					var left = machine.graph;
-					var der = new Der(left.prin.name).addToGroup(machine.graph.child);
-					new Link(der.key, left.prin.key, "n", "s").addToGroup(machine.graph.child);
-					// rhs
-					var right = this.toGraph(ast.rhs, machine.graph.child);		
-					
-					new Link(app.key, der.key, "w", "s").addToGroup(machine.graph.child);
-					new Link(app.key, right.prin.key, "e", "s").addToGroup(machine.graph.child);
 
-					var term = new Term(app, Term.joinAuxs(left.auxs, right.auxs, machine.graph.child));
+					// copy parts of the old group (apart from the start node)
+					console.log('BEFORE NODES');
+					console.log(machine.graph.child.nodes.length);
+					machine.graph.child.nodes.forEach(function (node) {
+						console.log(node.key);
+					});
+					leftNodes.forEach(function (node) {
+						console.log(node.key);
+						node.addToGraph(Helper.graph, node.key);
+						node.addToGroup(machine.graph.child);
+					});
+					console.log('AFTER NODES');
+					console.log(machine.graph.child.nodes.length);
+					machine.graph.child.nodes.forEach(function (node) {
+						console.log(node.key);
+					});
+					// console.log('BEFORE LINKS');
+					// console.log(machine.graph.child.links.length);
+					// machine.graph.child.links.forEach(function (link) {
+					// 	console.log(link.key);
+					// });
+					// leftLinks.forEach(function (link) {
+					// 	link.addToGraph(Helper.graph);
+					// 	link.addToGroup(machine.graph.child)
+					// 	link.addToNode();
+					// });
+					// console.log('AFTER LINKS');
+					// console.log(machine.graph.child.links.length);
+					// machine.graph.child.links.forEach(function (link) {
+					// 	console.log(link.key);
+					// });
 
-					new Link(start.key, term.prin.key, "n", "s").addToGroup(machine.graph.child);
-					machine.deleteVarNode(machine.graph.child);
+					// // follow the same steps from Application in toGraph
+					// var der = new Der(leftName).addToGroup(machine.graph.child);
+					// new Link(der.key, leftKey, "n", "s").addToGroup(machine.graph.child);
+
+					// // create the rhs from the source AST
+					// var right = machine.toGraph(ast, group);		
+
+					// new Link(app.key, der.key, "w", "s").addToGroup(machine.graph.child);
+					// new Link(app.key, right.prin.key, "e", "s").addToGroup(machine.graph.child);
+
+					// var term = new Term(app, Term.joinAuxs(group.auxs, right.auxs, machine.graph.child));
+					// new Link(start.key, term.prin.key, "n", "s").addToGroup(machine.graph.child);
+					// machine.deleteVarNode(machine.graph.child);
 				};
 			} else {
 				if (data[0] === '•') {
