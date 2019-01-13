@@ -394,15 +394,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 				var nextLink;
 
 				token.rewrite = false;
-				console.log('here: ' + node.key);
-				console.log(token.isMain)
-				// console.log(node.key);
 				nextLink = node.transition(token, token.link);
-				if (nextLink) {
-					console.log(nextLink.from + ' - ' + nextLink.to)
-				} else {
-					console.log(' - ')
-				}
 
 				if (nextLink != null) {
 					token.setLink(nextLink);
@@ -415,7 +407,6 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 				else {
 					token.transited = false;
 					if (token.isMain) {
-						console.log('finish')
 						token.setLink(null);
 						this.setPlay(false);
 						this.setPlaying(false);
@@ -445,10 +436,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 			// the latest value is stored in the first element in the dataStack
 			var data = dataStack[0];
 
-			console.log(dataStack);
-
 			// data consists of the last node and it's link
-			// TODO: need to make a distinction between abstraction and anything else
 			if (data[0] === 'λ' || data[1] !== '-') {
 				var machine = this;
 				// this means it doesn't return a simple value
@@ -469,56 +457,27 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 					machine.newValues.clear();
 					machine.hasUpdate = false;
 
-					// create the lhs by getting the node pointed to by the start node
-					// the start node will always have key nd1
-					var oldStart = Helper.graph.findNodeByKey("nd1");
+					// remove the od start
+					var start = machine.graph.findNodeByKey("nd1");
+
 					// the start node will point to the left element
-					var left = Helper.graph.findNodeByKey(oldStart.links[0].to);
-					// console.log(left);
-					var leftName = left.name;
-					var leftKey = left.key;
-					var leftNodes = Helper.graph.allNodes;
-					var leftLinks = Helper.graph.allLinks;
+					var left = machine.graph.findNodeByKey(start.links[0].to);
 					var leftAuxs = left.group.auxs;
 
-					// clear old graph now, because we don't need it anymore
-					machine.graph.clear();
-
-					// create new graph with new start node and term consisting of app
-					var start = new Start().addToGroup(machine.graph.child);
-
-					// console.log('before nodes: ' + machine.graph.allNodes.size);
-					// console.log('before links: ' + machine.graph.allLinks.length);
-
-					// console.log('new nodes: ' + leftNodes.size);
-					// console.log('new links: ' + leftLinks.length);
-
-					// copy parts of the old group (apart from the start node)
-					leftNodes.forEach(function (node) {
-						if (node.key !== 'nd0' && node.key !== 'nd1') {
-							node.addToGraph(Helper.graph, node.key);
-							node.addToGroup(machine.graph.child);
-						}
+					// need to remove link out of start nodes
+					start.findLinksConnected().forEach(function (link) {
+						link.delete();
 					});
-					leftLinks.forEach(function (link) {
-						if (link.from !== 'nd1' && link.to !== 'nd1') {
-							link.addToGraph(Helper.graph);
-							link.addToGroup(machine.graph.child)
-							link.addToNode();
-						}
-					});
-					
-					console.log(machine.graph.allNodes);
-					console.log(machine.graph.allLinks);
-
-					var app = new App().addToGroup(machine.graph.child);
 
 					// follow the same steps from Application in toGraph
-					var der = new Der(leftName).addToGroup(machine.graph.child);
-					new Link(der.key, leftKey, "n", "s").addToGroup(machine.graph.child);
+					var der = new Der(left.name).addToGroup(machine.graph.child);
+
+					new Link(der.key, left.key, "n", "s").addToGroup(machine.graph.child);
 
 					// create the rhs from the source AST
 					var right = machine.toGraph(ast, machine.graph.child);		
+
+					var app = new App().addToGroup(machine.graph.child);
 
 					new Link(app.key, der.key, "w", "s").addToGroup(machine.graph.child);
 					new Link(app.key, right.prin.key, "e", "s").addToGroup(machine.graph.child);

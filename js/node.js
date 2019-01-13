@@ -18,9 +18,9 @@ define(['helper'], function(Helper) {
 			this.addToGraph(Helper.graph); // cheating!
 		}
 
-		addToGraph(graph, key) {
+		addToGraph(graph) {
 			if (graph != null)
-				graph.addNode(this, key);
+				graph.addNode(this);
 			this.graph = graph;
 			return this; // to provide chain operation
 		}

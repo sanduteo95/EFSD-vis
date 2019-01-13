@@ -17,15 +17,10 @@ define(['group'], function(Group) {
 		}
 
 		// give a key to a node and add it to allNodes
-		addNode(node, key) {
-			node.key = (key ? key : 'nd' + this.key);
+		addNode(node) {
+			node.key = 'nd' + this.key;
 			this.allNodes.set(node.key, node);
-			if (key) {
-				this.key = parseInt(key.substring(2)) + 1;
-				console.log('updated key to ' + this.key)
-			} else {
-				this.key++;
-			}
+			this.key++;
 		}
 
 		// also removes connected links
