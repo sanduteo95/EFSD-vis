@@ -490,8 +490,11 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 					machine.deleteVarNode(machine.graph.child);
 				};
 			} else if (data[1] !== '-') {
-				// TODO
-				return this;
+				var machine = Object.assign(Object.create(Object.getPrototypeOf(GoIMachine)), this);
+				return {
+					data: data[0],
+					machine: machine
+				};
 			} else {
 				if (data[0] === '•') {
 					// this represents the unit so it doesn't return anything

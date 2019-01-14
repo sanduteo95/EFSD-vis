@@ -45,7 +45,10 @@ define(["goi-machine"],
 						callback(null, function () {
 							machine.setPlay(false);
 							machine.setPlaying(false);
-							result(arguments[0]);
+							// can only receive one argument at a time so this work
+							if (arguments.length !== 0 ) {
+								result(arguments[0]);
+							}
 							machine.setPlay(true);
 							machine.setFinished(false);
 							if (!machine.isPlaying()) {
