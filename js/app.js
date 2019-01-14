@@ -70,6 +70,7 @@ define(["goi-machine"],
 										autoPlay (callback);
 									}, autoPlay, callback);
 								} else {
+									termCalls--;
 									setTimeout(function () {
 										autoPlay (callback);
 									}, CALLBACK_TIMEOUT);
