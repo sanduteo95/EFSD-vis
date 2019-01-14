@@ -4,11 +4,9 @@ define(function () {
         return !isNaN(parseFloat(n)) && isFinite(n);
     }
 
-    // needed by goi-machine, link and node
-    var graph = null;
-
     return {
         isNumber: isNumber,
-        graph: graph
+        // needed by goi-machine, link and node
+        graph: null
     };
 });

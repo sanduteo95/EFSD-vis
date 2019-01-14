@@ -10,7 +10,7 @@ define(["goi-machine"],
 			// global variables used to set-up timeouts to avoid stack overflow 
 			var termCalls = 0;
 			maxTermCalls = maxTermCalls || 125;
-			var CALLBACK_TIMEOUT = 100;
+			var CALLBACK_TIMEOUT = 0;
 
 			function interpret (program, callback, addTiming) {
 				// start time
@@ -36,22 +36,44 @@ define(["goi-machine"],
 			function autoPlay (callback) {
 				termCalls++;
 				machine.setPlaying(true);
-				let data = "";
+				let result;
 				if (!machine.isFinished()) {
-					data = machine.pass();
+					result = machine.pass();
 				} 
 				if (machine.isFinished()) {
-					callback(null, data);
+					if (typeof result === 'function') {
+						callback(null, function () {
+							machine.setPlay(false);
+							machine.setPlaying(false);
+							// can only receive one argument at a time so this work
+							if (arguments.length !== 0 ) {
+								result(arguments[0]);
+							}
+							machine.setPlay(true);
+							machine.setFinished(false);
+							if (!machine.isPlaying()) {
+								autoPlay(callback);
+							}
+						});
+					} else {
+						callback(null, result);
+					}
 				} else {
 					if (machine.isPlay()) {
 						if (global.__residual) {
 							// if we're in Prepack, and weve reached its maximum nubmer of calls
 							if (termCalls > maxTermCalls/3) {
-								// set to 0 because up till now Prepack evaluated everything
-								termCalls = 0;
-								global.__residual("void", function(autoPlay, callback) {
-									autoPlay (callback);
-								}, autoPlay, callback);
+								if (termCalls > maxTermCalls) {
+									// set to 0 because up till now Prepack evaluated everything
+									termCalls = 0;
+									global.__residual("void", function(autoPlay, callback) {
+										autoPlay (callback);
+									}, autoPlay, callback);
+								} else {
+									setTimeout(function () {
+										autoPlay (callback);
+									}, CALLBACK_TIMEOUT);
+								}
 							} else {
 								// just call the function as it is
 								autoPlay (callback);

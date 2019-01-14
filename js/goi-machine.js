@@ -6,7 +6,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 	'nodes/binop', 'nodes/const', 'nodes/contract', 'nodes/der', 'nodes/var', 
 	'nodes/if', 'nodes/pax', 'nodes/promo', 'nodes/recur', 'nodes/start', 'nodes/unop',
 	'nodes/weak', 'nodes/delta', 'nodes/set', 'nodes/dep', 'nodes/deref', 'nodes/mod',
-	'nodes/prop', 'nodes/prov', 'helper'
+	'nodes/prop', 'nodes/prov', 'gc', 'helper'
 ], 
 	function(Abstraction, Application, Identifier, Constant, 
 		Operation, UnaryOp, BinaryOp, IfThenElse, Recursion,
@@ -15,7 +15,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		Graph, Group, Term, BoxWrapper, Expo, Abs, App,
 		BinOp, Const, Contract, Der, Var, 
 		If, Pax, Promo, Recur, Start, UnOp,
-		Weak, Delta, Set, Dep, Deref, Mod, Prop, Prov, Helper) {
+		Weak, Delta, Set, Dep, Deref, Mod, Prop, Prov, GC, Helper) {
 			
 	class GoIMachine {
 		
@@ -23,6 +23,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 			this.graph = new Graph(this);
 			Helper.graph = this.graph; // cheating!
 			this.token = new MachineToken(this); 
+			this.gc = new GC(this.graph);
 			this.count = 0;
 
 			this.token.isMain = true;
@@ -330,6 +331,15 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		}
 
 		batchPass(tokens) {
+			// random	
+			/*	
+			var arr = Array.from(new Array(tokens.length),(val,index)=>index+1);	
+			this.shuffle(arr);	
+			for (var i=0; i<arr.length; i++) {	
+				var token = arr_2[arr[i]-1];	
+				this.tokenPass(token, flag, dataStack, boxStack, modStack);	
+			}	
+			*/
 			var arr_2 = Array.from(tokens);
 			// all progress 1 step
 			for (var i=0; i<arr_2.length; i++) {
@@ -342,6 +352,13 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		// machine step
 		pass() {
 			if (!this.isFinished()) {
+				/*	
+				this.count++;	
+				if (this.count == 200) {	
+					this.count = 0;	
+					this.gc.collect();	
+				}	
+				*/
 				if (this.evaluating) {
 					this.batchPass(this.evalTokens);
 					if (this.evalTokens.length == 0) {
@@ -383,11 +400,16 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 				if (nextLink != null) {
 					token.setLink(nextLink);
 					token.transited = true;
+					if (token.isMain) {	
+						// prints progress
+						// console.log(this.getData(token));
+					}
 				}
 				else {
 					token.transited = false;
 					if (token.isMain) {
 						token.setLink(null);
+						//this.gc.collect();
 						this.setPlay(false);
 						this.setPlaying(false);
 						this.setFinished(true);
@@ -410,7 +432,77 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		}
 
 		getData(token) {
-			return token.dataStack.length == 0 ? '□' : Array.from(token.dataStack).reverse().toString() + ',□';
+			var dataStack = Array.from(token.dataStack).reverse();
+			dataStack.push('□');
+
+			// the latest value is stored in the first element in the dataStack
+			var data = dataStack[0];
+
+			// data consists of the last node and it's link
+			if (data[0] === 'λ') {
+				// abstraction
+				var machine = this;
+				// this means it doesn't return a simple value
+				return function (source) {
+					// create AST of the future abstract arguments
+					const lexer = new Lexer(source + '\0');
+					const parser = new Parser(lexer);
+					const ast = parser.parse();
+
+					// init
+					machine.token.reset();
+					machine.count = 0;
+		
+					machine.evalTokens = [];
+					machine.cells = [];
+					machine.readyEvalTokens = 0;
+					machine.evaluating = false;
+					machine.newValues.clear();
+					machine.hasUpdate = false;
+
+					// get the start node
+					var start = machine.graph.findNodeByKey("nd1");
+
+					// the start node will point to the node that'll be the lhs of the application
+					var left = machine.graph.findNodeByKey(start.links[0].to);
+					var leftAuxs = left.group.auxs;
+
+					// need to remove link out of start nodes
+					start.findLinksConnected().forEach(function (link) {
+						link.delete();
+					});
+
+					// follow the same steps from Application in toGraph
+					var der = new Der(left.name).addToGroup(machine.graph.child);
+
+					new Link(der.key, left.key, "n", "s").addToGroup(machine.graph.child);
+
+					// create the rhs from the source AST
+					var right = machine.toGraph(ast, machine.graph.child);		
+
+					var app = new App().addToGroup(machine.graph.child);
+
+					new Link(app.key, der.key, "w", "s").addToGroup(machine.graph.child);
+					new Link(app.key, right.prin.key, "e", "s").addToGroup(machine.graph.child);
+
+					var term = new Term(app, Term.joinAuxs(leftAuxs, right.auxs, machine.graph.child));
+					new Link(start.key, term.prin.key, "n", "s").addToGroup(machine.graph.child);
+					machine.deleteVarNode(machine.graph.child);
+				};
+			} else if (data[1] !== '-') {
+				var machine = Object.assign(Object.create(Object.getPrototypeOf(GoIMachine)), this);
+				return {
+					data: data[0],
+					machine: machine
+				};
+			} else {
+				if (data[0] === '•') {
+					// this represents the unit so it doesn't return anything
+					return undefined;
+				} else {
+					return data[0];
+				}
+			}
 		}
 
 	}
