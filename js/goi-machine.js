@@ -6,7 +6,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 	'nodes/binop', 'nodes/const', 'nodes/contract', 'nodes/der', 'nodes/var', 
 	'nodes/if', 'nodes/pax', 'nodes/promo', 'nodes/recur', 'nodes/start', 'nodes/unop',
 	'nodes/weak', 'nodes/delta', 'nodes/set', 'nodes/dep', 'nodes/deref', 'nodes/mod',
-	'nodes/prop', 'nodes/prov', 'helper'
+	'nodes/prop', 'nodes/prov', 'gc', 'helper'
 ], 
 	function(Abstraction, Application, Identifier, Constant, 
 		Operation, UnaryOp, BinaryOp, IfThenElse, Recursion,
@@ -15,7 +15,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 		Graph, Group, Term, BoxWrapper, Expo, Abs, App,
 		BinOp, Const, Contract, Der, Var, 
 		If, Pax, Promo, Recur, Start, UnOp,
-		Weak, Delta, Set, Dep, Deref, Mod, Prop, Prov, Helper) {
+		Weak, Delta, Set, Dep, Deref, Mod, Prop, Prov, GC, Helper) {
 			
 	class GoIMachine {
 		
@@ -23,6 +23,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 			this.graph = new Graph(this);
 			Helper.graph = this.graph; // cheating!
 			this.token = new MachineToken(this); 
+			this.gc = new GC(this.graph);
 			this.count = 0;
 
 			this.token.isMain = true;
@@ -408,6 +409,7 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 					token.transited = false;
 					if (token.isMain) {
 						token.setLink(null);
+						//this.gc.collect();
 						this.setPlay(false);
 						this.setPlaying(false);
 						this.setFinished(true);
@@ -437,7 +439,8 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 			var data = dataStack[0];
 
 			// data consists of the last node and it's link
-			if (data[0] === 'λ' || data[1] !== '-') {
+			if (data[0] === 'λ') {
+				// abstraction
 				var machine = this;
 				// this means it doesn't return a simple value
 				return function (source) {
@@ -457,10 +460,10 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 					machine.newValues.clear();
 					machine.hasUpdate = false;
 
-					// remove the od start
+					// get the start node
 					var start = machine.graph.findNodeByKey("nd1");
 
-					// the start node will point to the left element
+					// the start node will point to the node that'll be the lhs of the application
 					var left = machine.graph.findNodeByKey(start.links[0].to);
 					var leftAuxs = left.group.auxs;
 
@@ -486,6 +489,9 @@ define(['ast/abstraction', 'ast/application', 'ast/identifier', 'ast/constant',
 					new Link(start.key, term.prin.key, "n", "s").addToGroup(machine.graph.child);
 					machine.deleteVarNode(machine.graph.child);
 				};
+			} else if (data[1] !== '-') {
+				// TODO
+				return this;
 			} else {
 				if (data[0] === '•') {
 					// this represents the unit so it doesn't return anything
