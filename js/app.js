@@ -1,13 +1,6 @@
 define(["goi-machine"],
 	function (machine) {
-        return function (program, mainCallback, addTiming, maxTermCalls) {
-			var abstractedConsole;
-			// need to add console to Prepack
-			if (global.__residual) {
-				abstractedConsole = __abstract({}, 'console');
-			}	
-	
-			// global variables used to set-up timeouts to avoid stack overflow 
+        return function (program, mainCallback, maxTermCalls) {	
 			var termCalls = 0;
 			maxTermCalls = maxTermCalls || 125;
 
@@ -18,16 +11,6 @@ define(["goi-machine"],
 			}
 
 			function interpret (program, callback) {
-				// start time
-				if (addTiming) {
-					if (global.__residual) {
-						global.__residual('void', console => {
-							console.time('time');
-						}, abstractedConsole);
-					} else {
-						console.time('time');
-					}
-				}
 				machine.setPlay(false);
 				machine.setPlaying(false);
 				machine.compile(program);
@@ -79,6 +62,8 @@ define(["goi-machine"],
 					if (machine.isPlay()) {
 						if (global.__residual && termCalls > maxTermCalls) {
 							// set to 0 because up till now Prepack evaluated everything
+							termCalls = 0;
+							machine.setPlaying(false);
 							global.__residual("void", function(trampoline, autoPlay, callback) {
 								return trampoline({
 									fn: autoPlay,
@@ -99,22 +84,7 @@ define(["goi-machine"],
 
 			trampoline({
 				fn: interpret,
-				args: [program, function (err, result) {
-					// end time
-					if (addTiming) {
-						if (global.__residual) {
-							global.__residual('void', console => {
-								console.timeEnd('time');
-							}, abstractedConsole);
-						} else {
-							console.timeEnd('time');
-						}
-					} 
-					return {
-						fn: mainCallback,
-						args: [err, result]
-					};
-				}]
+				args: [program, mainCallback]
 			});
 		};
 	}
