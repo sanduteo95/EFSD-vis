@@ -63,7 +63,6 @@ define(["goi-machine"],
 						if (global.__residual && termCalls > maxTermCalls) {
 							// set to 0 because up till now Prepack evaluated everything
 							termCalls = 0;
-							machine.setPlaying(false);
 							global.__residual("void", function(trampoline, autoPlay, callback) {
 								return trampoline({
 									fn: autoPlay,
